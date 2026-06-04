@@ -1,749 +1,1897 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Revue Juridique</title>
-  <link rel="manifest" href="manifest.json" />
-  <meta name="theme-color" content="#0D1B2A" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Revue Juridique" />
-
-  <!-- Polices élégantes -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet" />
-
-  <style>
-    /* ===========================
-       VARIABLES & RESET
-    =========================== */
-    :root {
-      --midnight: #0D1B2A;
-      --navy: #162236;
-      --navy-light: #1E3150;
-      --gold: #C9A84C;
-      --gold-light: #E4C87E;
-      --gold-pale: #F5EED8;
-      --ivory: #FAF7F2;
-      --warm-white: #F0EBE1;
-      --text-dark: #1A1A2E;
-      --text-body: #2C3E50;
-      --text-muted: #7A8A9A;
-      --border: #D4C9A8;
-      --border-dark: #3A4A5A;
-      --serif-display: 'Playfair Display', Georgia, serif;
-      --serif-body: 'EB Garamond', Georgia, serif;
-      --serif-accent: 'Cormorant Garamond', Georgia, serif;
-    }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      background: var(--ivory);
-      color: var(--text-body);
-      font-family: var(--serif-body);
-      font-size: 17px;
-      line-height: 1.75;
-      min-height: 100vh;
-    }
-
-    /* ===========================
-       ÉCRAN DE VERROUILLAGE
-    =========================== */
-    #lock-screen {
-      position: fixed; inset: 0; z-index: 9999;
-      background: var(--midnight);
-      display: flex; align-items: center; justify-content: center;
-      padding: 2rem;
-      transition: opacity 0.6s ease, transform 0.6s ease;
-    }
-
-    #lock-screen.hidden {
-      opacity: 0; pointer-events: none; transform: translateY(-20px);
-    }
-
-    .lock-card {
-      background: linear-gradient(160deg, var(--navy) 0%, var(--midnight) 100%);
-      border: 1px solid var(--border-dark);
-      border-radius: 2px;
-      padding: 3rem 2.5rem;
-      max-width: 420px; width: 100%;
-      text-align: center;
-      box-shadow: 0 40px 80px rgba(0,0,0,0.5);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .lock-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 50%; transform: translateX(-50%);
-      width: 60%; height: 3px;
-      background: linear-gradient(90deg, transparent, var(--gold), transparent);
-    }
-
-    .lock-logo {
-      font-family: var(--serif-display);
-      font-size: 0.75rem;
-      letter-spacing: 0.35em;
-      color: var(--gold);
-      text-transform: uppercase;
-      margin-bottom: 0.5rem;
-    }
-
-    .lock-title {
-      font-family: var(--serif-display);
-      font-size: 2rem;
-      font-weight: 700;
-      color: var(--ivory);
-      line-height: 1.2;
-      margin-bottom: 0.5rem;
-    }
-
-    .lock-subtitle {
-      font-family: var(--serif-accent);
-      font-style: italic;
-      color: var(--text-muted);
-      font-size: 1rem;
-      margin-bottom: 2.5rem;
-    }
-
-    .lock-rule {
-      width: 48px; height: 1px;
-      background: var(--gold);
-      margin: 1.5rem auto;
-    }
-
-    .lock-field {
-      margin-bottom: 1rem;
-    }
-
-    .lock-field label {
-      display: block;
-      font-family: var(--serif-body);
-      font-size: 0.7rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--gold-light);
-      margin-bottom: 0.5rem;
-      text-align: left;
-    }
-
-    .lock-field input {
-      width: 100%;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid var(--border-dark);
-      border-radius: 1px;
-      padding: 0.85rem 1rem;
-      font-family: var(--serif-body);
-      font-size: 1rem;
-      color: var(--ivory);
-      outline: none;
-      transition: border-color 0.2s, background 0.2s;
-    }
-
-    .lock-field input:focus {
-      border-color: var(--gold);
-      background: rgba(201, 168, 76, 0.08);
-    }
-
-    .lock-field input::placeholder { color: rgba(255,255,255,0.25); }
-
-    .lock-btn {
-      width: 100%;
-      margin-top: 1.5rem;
-      padding: 1rem;
-      background: linear-gradient(135deg, var(--gold), var(--gold-light));
-      border: none; cursor: pointer;
-      font-family: var(--serif-display);
-      font-size: 0.85rem;
-      font-weight: 600;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--midnight);
-      border-radius: 1px;
-      transition: opacity 0.2s, transform 0.15s;
-    }
-
-    .lock-btn:hover { opacity: 0.92; transform: translateY(-1px); }
-    .lock-btn:active { transform: translateY(0); }
-
-    .lock-error {
-      color: #FF6B6B; font-size: 0.85rem;
-      margin-top: 0.75rem; min-height: 1.2em;
-    }
-
-    /* ===========================
-       EN-TÊTE DU JOURNAL
-    =========================== */
-    header {
-      background: var(--midnight);
-      color: var(--ivory);
-      border-bottom: 1px solid var(--border-dark);
-      position: sticky; top: 0; z-index: 100;
-    }
-
-    .header-top {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0.6rem 1.5rem;
-      border-bottom: 1px solid rgba(201, 168, 76, 0.2);
-    }
-
-    .header-dateline {
-      font-family: var(--serif-body);
-      font-size: 0.75rem;
-      letter-spacing: 0.12em;
-      color: var(--text-muted);
-      text-transform: uppercase;
-    }
-
-    .header-user {
-      font-family: var(--serif-body);
-      font-size: 0.8rem;
-      color: var(--gold-light);
-      cursor: pointer;
-      display: flex; align-items: center; gap: 0.4rem;
-    }
-
-    .header-user:hover { color: var(--gold); }
-
-    .header-main {
-      text-align: center;
-      padding: 1.2rem 1.5rem 1rem;
-    }
-
-    .header-kicker {
-      font-family: var(--serif-body);
-      font-size: 0.65rem;
-      letter-spacing: 0.4em;
-      text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 0.4rem;
-    }
-
-    .header-title {
-      font-family: var(--serif-display);
-      font-size: clamp(1.8rem, 5vw, 2.8rem);
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      color: var(--ivory);
-      line-height: 1;
-    }
-
-    .header-rule {
-      display: flex; align-items: center; gap: 1rem;
-      margin: 0.8rem 0 0.5rem;
-    }
-
-    .header-rule::before, .header-rule::after {
-      content: ''; flex: 1; height: 1px;
-      background: linear-gradient(90deg, transparent, var(--gold), transparent);
-    }
-
-    .header-rule-ornament {
-      color: var(--gold); font-size: 0.9rem; letter-spacing: 0.3em;
-    }
-
-    .header-nav {
-      display: flex; justify-content: center; gap: 2rem;
-      padding: 0.5rem 1.5rem 0.8rem;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .header-nav::-webkit-scrollbar { display: none; }
-
-    .header-nav a {
-      font-family: var(--serif-body);
-      font-size: 0.72rem;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--text-muted);
-      text-decoration: none;
-      white-space: nowrap;
-      transition: color 0.2s;
-    }
-
-    .header-nav a:hover { color: var(--gold); }
-
-    /* ===========================
-       CONTENU PRINCIPAL
-    =========================== */
-    main {
-      max-width: 860px;
-      margin: 0 auto;
-      padding: 2.5rem 1.25rem 4rem;
-    }
-
-    /* Loading State */
-    .loading-state {
-      text-align: center;
-      padding: 5rem 1rem;
-    }
-
-    .loading-spinner {
-      width: 36px; height: 36px;
-      border: 2px solid var(--border);
-      border-top-color: var(--gold);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-      margin: 0 auto 1.5rem;
-    }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    .loading-text {
-      font-family: var(--serif-accent);
-      font-style: italic;
-      color: var(--text-muted);
-      font-size: 1.1rem;
-    }
-
-    /* Error State */
-    .error-state {
-      text-align: center;
-      padding: 3rem 1rem;
-      border: 1px solid #FFCCCC;
-      background: #FFF5F5;
-      border-radius: 2px;
-    }
-
-    .error-state h3 {
-      font-family: var(--serif-display);
-      color: #CC4444;
-      margin-bottom: 0.5rem;
-    }
-
-    .error-state p { color: var(--text-muted); font-size: 0.9rem; }
-
-    /* Empty State */
-    .empty-state {
-      text-align: center;
-      padding: 5rem 1rem;
-    }
-
-    .empty-state .ornament {
-      font-size: 2rem; color: var(--border);
-      margin-bottom: 1.5rem;
-    }
-
-    .empty-state h3 {
-      font-family: var(--serif-display);
-      font-size: 1.5rem;
-      color: var(--text-muted);
-      margin-bottom: 0.5rem;
-    }
-
-    .empty-state p { color: var(--text-muted); font-size: 0.95rem; }
-
-    /* ===========================
-       ARTICLE CARD
-    =========================== */
-    .article-card {
-      background: #fff;
-      border: 1px solid var(--border);
-      margin-bottom: 3.5rem;
-      box-shadow: 0 4px 24px rgba(13,27,42,0.06);
-      animation: fadeUp 0.5s ease both;
-      position: relative;
-      overflow: hidden;
-    }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(16px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .article-card::before {
-      content: '';
-      position: absolute; top: 0; left: 0; right: 0;
-      height: 3px;
-      background: linear-gradient(90deg, var(--midnight), var(--gold), var(--midnight));
-    }
-
-    /* Article Header */
-    .article-header {
-      background: var(--midnight);
-      color: var(--ivory);
-      padding: 2rem 2rem 1.5rem;
-    }
-
-    .article-meta {
-      display: flex; align-items: center; gap: 1rem;
-      margin-bottom: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .article-cabinet {
-      font-family: var(--serif-body);
-      font-size: 0.68rem;
-      letter-spacing: 0.25em;
-      text-transform: uppercase;
-      color: var(--gold);
-    }
-
-    .article-date {
-      font-family: var(--serif-body);
-      font-size: 0.72rem;
-      color: var(--text-muted);
-    }
-
-    .article-title {
-      font-family: var(--serif-display);
-      font-size: clamp(1.4rem, 4vw, 2rem);
-      font-weight: 700;
-      line-height: 1.25;
-      color: var(--ivory);
-      margin-bottom: 1rem;
-    }
-
-    .article-intro {
-      font-family: var(--serif-accent);
-      font-style: italic;
-      font-size: 1.05rem;
-      color: rgba(250,247,242,0.75);
-      line-height: 1.6;
-      border-left: 2px solid var(--gold);
-      padding-left: 1rem;
-    }
-
-    .article-image {
-      width: 100%;
-      max-height: 320px;
-      object-fit: cover;
-      display: block;
-    }
-
-    /* Article Body */
-    .article-body {
-      padding: 2rem;
-    }
-
-    /* Blocs de contenu */
-    .block-grand-titre {
-      margin: 1.5rem 0 0.75rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .block-grand-titre h2 {
-      font-family: var(--serif-display);
-      font-size: 1.35rem;
-      font-weight: 700;
-      line-height: 1.3;
-    }
-
-    .block-sous-titre {
-      font-family: var(--serif-accent);
-      font-style: italic;
-      font-size: 1.15rem;
-      color: var(--text-muted);
-      margin: 1rem 0 0.5rem;
-    }
-
-    .block-paragraphe {
-      font-family: var(--serif-body);
-      font-size: 1rem;
-      line-height: 1.85;
-      color: var(--text-body);
-      margin-bottom: 1rem;
-      text-align: justify;
-    }
-
-    .block-citation {
-      margin: 1.5rem 0;
-      padding: 1.25rem 1.5rem;
-      background: var(--gold-pale);
-      border-left: 4px solid var(--gold);
-      font-family: var(--serif-accent);
-      font-style: italic;
-      font-size: 1.1rem;
-      color: var(--text-dark);
-      line-height: 1.6;
-    }
-
-    /* ===========================
-       PIED D'ARTICLE (Likes & Commentaires)
-    =========================== */
-    .article-footer {
-      border-top: 1px solid var(--border);
-      padding: 1.5rem 2rem;
-      background: var(--warm-white);
-    }
-
-    .article-interactions {
-      display: flex; align-items: center; gap: 1.5rem;
-      margin-bottom: 1.5rem;
-    }
-
-    .like-btn {
-      display: inline-flex; align-items: center; gap: 0.5rem;
-      background: none;
-      border: 1px solid var(--border);
-      border-radius: 1px;
-      padding: 0.5rem 1.1rem;
-      font-family: var(--serif-body);
-      font-size: 0.85rem;
-      color: var(--text-body);
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-
-    .like-btn:hover, .like-btn.liked {
-      background: var(--midnight);
-      border-color: var(--midnight);
-      color: var(--gold);
-    }
-
-    .like-btn.liked { cursor: default; }
-
-    .like-icon { font-size: 1.1rem; transition: transform 0.2s; }
-    .like-btn:not(.liked):hover .like-icon { transform: scale(1.25); }
-
-    .comment-count {
-      font-family: var(--serif-body);
-      font-size: 0.85rem;
-      color: var(--text-muted);
-    }
-
-    /* Commentaires */
-    .comments-section h4 {
-      font-family: var(--serif-display);
-      font-size: 0.9rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--text-dark);
-      margin-bottom: 1rem;
-      display: flex; align-items: center; gap: 0.75rem;
-    }
-
-    .comments-section h4::after {
-      content: ''; flex: 1; height: 1px;
-      background: var(--border);
-    }
-
-    .comment-list {
-      list-style: none;
-      margin-bottom: 1.25rem;
-    }
-
-    .comment-item {
-      padding: 0.9rem 0;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .comment-item:last-child { border-bottom: none; }
-
-    .comment-author {
-      font-family: var(--serif-body);
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--navy);
-      letter-spacing: 0.05em;
-      margin-bottom: 0.3rem;
-    }
-
-    .comment-date {
-      font-family: var(--serif-body);
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      margin-left: 0.5rem;
-      font-weight: 400;
-    }
-
-    .comment-text {
-      font-family: var(--serif-body);
-      font-size: 0.95rem;
-      color: var(--text-body);
-      line-height: 1.6;
-    }
-
-    /* Formulaire de commentaire */
-    .comment-form {
-      display: flex; gap: 0.75rem; align-items: flex-start;
-    }
-
-    .comment-input {
-      flex: 1;
-      border: 1px solid var(--border);
-      border-radius: 1px;
-      padding: 0.65rem 0.9rem;
-      font-family: var(--serif-body);
-      font-size: 0.95rem;
-      color: var(--text-body);
-      background: #fff;
-      resize: none;
-      min-height: 44px;
-      transition: border-color 0.2s;
-    }
-
-    .comment-input:focus {
-      outline: none;
-      border-color: var(--gold);
-    }
-
-    .comment-submit {
-      padding: 0.65rem 1.2rem;
-      background: var(--midnight);
-      color: var(--gold);
-      border: none; cursor: pointer;
-      font-family: var(--serif-body);
-      font-size: 0.75rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      border-radius: 1px;
-      white-space: nowrap;
-      transition: background 0.2s;
-      flex-shrink: 0;
-    }
-
-    .comment-submit:hover { background: var(--navy-light); }
-    .comment-submit:disabled { opacity: 0.5; cursor: wait; }
-
-    /* ===========================
-       DIVISEUR ENTRE ARTICLES
-    =========================== */
-    .article-divider {
-      display: flex; align-items: center;
-      gap: 1.5rem; margin: 1.5rem 0 3rem;
-      color: var(--border);
-      font-size: 0.8rem; letter-spacing: 0.3em;
-    }
-
-    .article-divider::before, .article-divider::after {
-      content: ''; flex: 1; height: 1px;
-      background: var(--border);
-    }
-
-    /* ===========================
-       PIED DE PAGE
-    =========================== */
-    footer {
-      background: var(--midnight);
-      color: var(--text-muted);
-      text-align: center;
-      padding: 2.5rem 1.5rem;
-      border-top: 1px solid var(--border-dark);
-    }
-
-    .footer-title {
-      font-family: var(--serif-display);
-      font-size: 1.1rem;
-      color: var(--gold);
-      margin-bottom: 0.4rem;
-    }
-
-    .footer-text {
-      font-family: var(--serif-body);
-      font-size: 0.8rem;
-      line-height: 1.6;
-    }
-
-    .footer-rule {
-      width: 40px; height: 1px;
-      background: var(--border-dark);
-      margin: 1rem auto;
-    }
-
-    /* ===========================
-       TOAST NOTIFICATION
-    =========================== */
-    #toast {
-      position: fixed; bottom: 1.5rem; right: 1.5rem; z-index: 9998;
-      background: var(--midnight);
-      color: var(--ivory);
-      border-left: 3px solid var(--gold);
-      padding: 0.9rem 1.5rem;
-      font-family: var(--serif-body);
-      font-size: 0.9rem;
-      border-radius: 1px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-      transform: translateX(120%);
-      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-
-    #toast.show { transform: translateX(0); }
-
-    /* ===========================
-       RESPONSIVE
-    =========================== */
-    @media (max-width: 600px) {
-      .article-header, .article-body, .article-footer {
-        padding-left: 1.25rem;
-        padding-right: 1.25rem;
-      }
-
-      .comment-form { flex-direction: column; }
-      .comment-submit { width: 100%; text-align: center; }
-
-      .header-nav { gap: 1.25rem; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Revue Juridique</title>
+<meta name="description" content="Revue juridique de référence. Analyses doctrinales, jurisprudences commentées, actualités du droit.">
+<meta name="theme-color" content="#faf9f6">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Revue Juridique">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#faf9f6;
+  --bg2:#f4f2ed;
+  --bg3:#edeae3;
+  --surface:#e8e4dc;
+  --surface2:#dedad0;
+  --gold:#7a5c10;
+  --gold2:#8f6d1a;
+  --gold3:#b8922e;
+  --text:#111008;
+  --text2:#221e16;
+  --text3:#3d3428;
+  --red:#b02a1a;
+  --green:#1f7a42;
+  --border:rgba(100,80,20,0.18);
+  --border2:rgba(100,80,20,0.35);
+  --font-serif:'Cormorant Garamond',Georgia,serif;
+  --font-sans:'DM Sans',-apple-system,sans-serif;
+  --radius:4px;
+  --radius-lg:8px;
+  --transition:0.2s ease;
+}
+html{scroll-behavior:smooth;font-size:16px}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-sans);
+  font-weight:400;
+  line-height:1.6;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ====== LOCK SCREEN ====== */
+#lock-screen{
+  position:fixed;inset:0;z-index:9999;
+  background:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  padding:2rem;
+  transition:opacity 0.5s ease,transform 0.5s ease;
+}
+#lock-screen.hidden{opacity:0;pointer-events:none;transform:translateY(-20px)}
+.lock-card{
+  background:#ffffff;
+  border:1px solid var(--border2);
+  border-radius:var(--radius-lg);
+  padding:3rem 2.5rem;
+  max-width:420px;width:100%;
+  text-align:center;
+  box-shadow:0 20px 60px rgba(139,105,20,0.08),0 4px 16px rgba(0,0,0,0.06);
+  position:relative;overflow:hidden;
+}
+.lock-card::before{
+  content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:60%;height:2px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+}
+.lock-symbol{font-size:2.5rem;color:var(--gold);margin-bottom:1rem;display:block;}
+.lock-title{font-family:var(--font-serif);font-size:2rem;font-weight:800;color:var(--text);line-height:1.2;margin-bottom:0.4rem;}
+.lock-subtitle{font-family:var(--font-serif);font-style:italic;color:#000;font-size:1rem;margin-bottom:2rem;}
+.lock-rule{width:40px;height:1px;background:var(--gold);margin:1.2rem auto 1.8rem}
+.lock-field{margin-bottom:1rem;text-align:left}
+.lock-field label{display:block;font-size:0.7rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:6px;}
+.lock-field input{
+  width:100%;background:var(--bg);
+  border:1px solid var(--border2);border-radius:var(--radius);
+  padding:10px 14px;font-family:var(--font-sans);font-size:0.95rem;
+  color:var(--text);outline:none;transition:border-color var(--transition);
+}
+.lock-field input:focus{border-color:var(--gold)}
+.lock-field input::placeholder{color:var(--text3)}
+.lock-btn{
+  width:100%;margin-top:1.5rem;padding:11px;
+  background:var(--gold);border:none;cursor:pointer;
+  font-family:var(--font-sans);font-size:0.85rem;font-weight:500;
+  letter-spacing:0.12em;text-transform:uppercase;
+  color:#fff;border-radius:var(--radius);
+  transition:background var(--transition),transform 0.15s;
+}
+.lock-btn:hover{background:var(--gold2);transform:translateY(-1px)}
+.lock-btn:active{transform:translateY(0)}
+.lock-error{color:#b02a1a;font-size:0.82rem;margin-top:0.75rem;min-height:1.2em}
+
+/* ====== HEADER ====== */
+header{
+  position:sticky;top:0;z-index:200;
+  background:#1a1208;
+  backdrop-filter:blur(20px);
+  border-bottom:2px solid var(--gold3);
+  padding:0 2rem;
+}
+.header-inner{
+  max-width:1200px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;
+  height:68px;
+}
+.logo{
+  display:flex;align-items:center;
+  text-decoration:none;
+  cursor:pointer;
+}
+.logo-img{
+  height:44px;width:auto;display:block;
+}
+.header-right{display:flex;align-items:center;gap:1rem}
+.header-search-btn{
+  background:none;border:1px solid rgba(245,237,224,0.25);border-radius:var(--radius);
+  width:36px;height:36px;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:#f5ede0;transition:all var(--transition);
+}
+.header-search-btn:hover{border-color:var(--gold3);color:var(--gold3)}
+.header-user{
+  font-size:0.8rem;color:#f5ede0;
+  display:flex;align-items:center;gap:6px;cursor:pointer;
+  transition:color var(--transition);
+}
+.header-user:hover{color:var(--gold3)}
+.user-dot{
+  width:26px;height:26px;border-radius:50%;
+  background:var(--surface2);border:1px solid var(--border2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.65rem;font-weight:500;color:var(--gold);
+}
+nav{display:flex;align-items:center;gap:1.8rem}
+nav a{
+  color:#f5ede0;text-decoration:none;font-size:0.82rem;
+  letter-spacing:0.08em;text-transform:uppercase;
+  transition:color var(--transition);position:relative;cursor:pointer;
+}
+nav a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--gold);transition:width var(--transition)}
+nav a:hover{color:var(--gold)}
+nav a:hover::after,nav a.active::after{width:100%}
+nav a.active{color:var(--gold)}
+.burger{display:none;cursor:pointer;background:none;border:none;color:#f5ede0;font-size:1.4rem;padding:4px}
+
+/* ====== SEARCH OVERLAY ====== */
+.search-overlay{
+  position:fixed;inset:0;z-index:300;
+  background:rgba(250,249,246,0.97);backdrop-filter:blur(20px);
+  display:flex;flex-direction:column;align-items:center;
+  padding:6rem 2rem 2rem;
+  opacity:0;pointer-events:none;transition:opacity 0.25s ease;
+}
+.search-overlay.open{opacity:1;pointer-events:all}
+.search-overlay-inner{width:100%;max-width:680px}
+.search-overlay-bar{
+  display:flex;align-items:center;gap:12px;
+  border-bottom:2px solid var(--gold);padding-bottom:12px;margin-bottom:2rem;
+}
+.search-overlay-bar svg{color:var(--gold);flex-shrink:0;width:22px;height:22px;}
+.search-overlay-input{
+  flex:1;background:none;border:none;outline:none;
+  font-family:var(--font-serif);font-size:1.8rem;font-weight:400;
+  color:var(--text);
+}
+.search-overlay-input::placeholder{color:var(--text3)}
+.search-close-btn{
+  background:none;border:1px solid var(--border);width:36px;height:36px;
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--text3);flex-shrink:0;
+  transition:all var(--transition);font-size:1.1rem;
+}
+.search-close-btn:hover{border-color:var(--border2);color:var(--gold)}
+.search-results{display:flex;flex-direction:column;gap:8px;max-height:60vh;overflow-y:auto}
+.search-result-item{
+  padding:1rem 1.2rem;background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--radius-lg);cursor:pointer;transition:all var(--transition);
+}
+.search-result-item:hover{border-color:var(--border2);background:var(--surface)}
+.search-result-title{font-family:var(--font-serif);font-size:1.1rem;color:var(--text);margin-bottom:4px}
+.search-result-meta{font-size:0.75rem;color:var(--text2)}
+.search-hint{font-size:0.8rem;color:var(--text2);text-align:center;margin-top:1.5rem}
+
+/* ====== NEWS TICKER ====== */
+.news-ticker{
+  background:var(--surface);border-bottom:1px solid var(--border);
+  padding:0 2rem;height:36px;overflow:hidden;
+  display:flex;align-items:center;gap:1rem;
+}
+.ticker-label{
+  font-size:0.65rem;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--gold);white-space:nowrap;padding-right:1rem;
+  border-right:1px solid var(--border2);flex-shrink:0;
+}
+.ticker-track-wrap{flex:1;overflow:hidden;position:relative}
+.ticker-track{
+  display:flex;gap:3rem;
+  animation:ticker-scroll 40s linear infinite;
+  white-space:nowrap;
+}
+.ticker-track:hover{animation-play-state:paused}
+.ticker-item{
+  font-size:0.78rem;color:var(--text);white-space:nowrap;
+  display:flex;align-items:center;gap:8px;cursor:pointer;
+  transition:color var(--transition);
+}
+.ticker-item:hover{color:var(--gold)}
+.ticker-item::before{content:'◆';font-size:0.4rem;color:var(--gold)}
+@keyframes ticker-scroll{
+  0%{transform:translateX(0)}
+  100%{transform:translateX(-50%)}
+}
+
+/* ====== HERO ====== */
+.hero{
+  position:relative;overflow:hidden;
+  padding:0 0 60px;
+}
+/* Bannière hero */
+.hero-banner{
+  width:100%;height:320px;
+  background:
+    linear-gradient(180deg,rgba(250,249,246,0) 0%,rgba(250,249,246,0.6) 60%,rgba(250,249,246,1) 100%),
+    linear-gradient(135deg,#1a1410 0%,#2c2218 35%,#3d3020 60%,#1a1410 100%);
+  position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;
+  margin-bottom:0;
+}
+.hero-banner::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    repeating-linear-gradient(0deg,transparent,transparent 39px,rgba(139,105,20,0.08) 39px,rgba(139,105,20,0.08) 40px),
+    repeating-linear-gradient(90deg,transparent,transparent 79px,rgba(139,105,20,0.05) 79px,rgba(139,105,20,0.05) 80px);
+}
+.hero-banner::after{
+  content:'⚖';
+  position:absolute;
+  font-size:180px;
+  color:rgba(139,105,20,0.07);
+  right:8%;top:50%;transform:translateY(-50%);
+  line-height:1;
+  pointer-events:none;
+}
+.hero-banner-inner{
+  position:relative;z-index:1;
+  text-align:center;padding:0 2rem;
+}
+.hero-banner-label{
+  font-size:0.68rem;letter-spacing:0.3em;text-transform:uppercase;
+  color:rgba(201,168,76,0.8);margin-bottom:1.2rem;
+}
+.hero-banner-title{
+  font-family:var(--font-serif);
+  font-size:clamp(2rem,4vw,3.5rem);
+  font-weight:800;color:#f5ede0;
+  letter-spacing:0.08em;line-height:1.2;
+}
+.hero-banner-title em{
+  font-style:italic;color:#c9a84c;
+}
+.hero-banner-rule{
+  width:60px;height:1px;background:#8b6914;margin:1.2rem auto 0;
+}
+.hero-bg{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse at 20% 50%,rgba(139,105,20,0.04) 0%,transparent 60%);
+  pointer-events:none;
+}
+.hero-lines{
+  position:absolute;inset:0;
+  background-image:repeating-linear-gradient(90deg,transparent,transparent 79px,rgba(139,105,20,0.03) 79px,rgba(139,105,20,0.03) 80px);
+  pointer-events:none;
+}
+.hero-inner{max-width:1200px;margin:0 auto;position:relative;padding:3rem 2rem 0}
+.hero-label{
+  font-size:0.7rem;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:1.5rem;
+  display:flex;align-items:center;gap:10px;
+}
+.hero-label::before{content:'';width:30px;height:1px;background:var(--gold)}
+.hero h1{
+  font-family:var(--font-serif);
+  font-size:clamp(2.5rem,5vw,4.5rem);
+  font-weight:800;line-height:1.15;
+  color:var(--text);max-width:700px;margin-bottom:1.5rem;
+}
+.hero h1 em{font-style:italic;color:var(--gold)}
+.hero-sub{font-size:1rem;color:#000;max-width:500px;margin-bottom:2.5rem;line-height:1.7}
+.hero-cta{display:flex;gap:1rem;flex-wrap:wrap}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:10px 22px;border-radius:var(--radius);
+  font-family:var(--font-sans);font-size:0.85rem;
+  font-weight:400;letter-spacing:0.06em;text-transform:uppercase;
+  text-decoration:none;border:none;cursor:pointer;
+  transition:all var(--transition);
+}
+.btn-primary{background:var(--gold);color:#fff}
+.btn-primary:hover{background:var(--gold2)}
+.btn-outline{background:transparent;color:var(--text);border:1px solid var(--border2)}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold)}
+.hero-stats{
+  display:flex;gap:3rem;margin-top:3rem;
+  padding-top:2rem;border-top:1px solid var(--border);
+}
+.stat-item{display:flex;flex-direction:column;gap:4px}
+.stat-num{font-family:var(--font-serif);font-size:2rem;font-weight:500;color:var(--gold)}
+.stat-label{font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text3)}
+
+/* ====== ACTUALITÉS SLIDER ====== */
+.slider-section{
+  background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  padding:2rem;margin-bottom:0;
+}
+.slider-section-inner{max-width:1200px;margin:0 auto;}
+.slider-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:1.5rem;
+}
+.slider-label{
+  font-size:0.68rem;letter-spacing:0.2em;text-transform:uppercase;
+  color:var(--gold);display:flex;align-items:center;gap:8px;
+}
+.slider-label::before{content:'';width:20px;height:1px;background:var(--gold)}
+.slider-controls{display:flex;align-items:center;gap:8px}
+.slider-btn{
+  width:32px;height:32px;border-radius:50%;
+  background:none;border:1px solid var(--border);
+  color:var(--text3);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.9rem;transition:all var(--transition);
+}
+.slider-btn:hover{border-color:var(--border2);color:var(--gold)}
+.slider-dots{display:flex;gap:6px;align-items:center}
+.slider-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--border2);cursor:pointer;transition:all var(--transition);border:none;padding:0;
+}
+.slider-dot.active{width:18px;border-radius:3px;background:var(--gold)}
+.slider-track-container{overflow:hidden;position:relative}
+.slider-track{
+  display:flex;gap:1.5rem;
+  transition:transform 0.5s cubic-bezier(0.4,0,0.2,1);
+}
+.news-card{
+  min-width:calc(33.333% - 1rem);
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:1.4rem;
+  cursor:pointer;transition:all var(--transition);
+  position:relative;overflow:hidden;flex-shrink:0;
+}
+.news-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  opacity:0;transition:opacity var(--transition);
+}
+.news-card:hover{border-color:var(--border2);transform:translateY(-2px)}
+.news-card:hover::before{opacity:1}
+.news-card-tag{
+  font-size:0.62rem;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:0.7rem;
+}
+.news-card-title{
+  font-family:var(--font-serif);font-size:1.1rem;font-weight:800;
+  color:var(--text);line-height:1.35;margin-bottom:0.7rem;
+}
+.news-card-excerpt{
+  font-size:0.8rem;color:var(--text);line-height:1.6;
+  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+  margin-bottom:1rem;
+}
+.news-card-date{font-size:0.72rem;color:var(--text3)}
+
+/* ====== MAIN ====== */
+main{max-width:1200px;margin:0 auto;padding:0 2rem 4rem}
+.section-header{
+  display:flex;align-items:baseline;justify-content:space-between;
+  margin:4rem 0 2rem;padding-bottom:1rem;border-bottom:1px solid var(--border);
+}
+.section-title{
+  font-family:var(--font-serif);font-size:1.8rem;font-weight:800;
+  color:var(--text);display:flex;align-items:center;gap:12px;
+}
+.section-title::before{content:'';width:3px;height:24px;background:var(--gold);border-radius:2px}
+.section-actions{display:flex;align-items:center;gap:1rem}
+.view-toggle{display:flex;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+.view-toggle-btn{
+  background:none;border:none;padding:6px 10px;
+  color:var(--text3);cursor:pointer;transition:all var(--transition);
+  display:flex;align-items:center;justify-content:center;
+}
+.view-toggle-btn.active{background:rgba(139,105,20,0.08);color:var(--gold)}
+.view-toggle-btn:hover:not(.active){color:var(--text2)}
+
+/* ====== ARTICLES GRID ====== */
+.articles-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
+  gap:1.5rem;
+}
+.articles-grid.list-view{grid-template-columns:1fr}
+.articles-grid.list-view .article-card{flex-direction:row;gap:1.2rem;padding:1.2rem}
+.articles-grid.list-view .card-img{width:120px;height:90px;flex-shrink:0;margin-bottom:0}
+.article-card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:1.5rem;
+  display:flex;flex-direction:column;cursor:pointer;
+  transition:all var(--transition);position:relative;overflow:hidden;
+}
+.article-card::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(139,105,20,0.02) 0%,transparent 60%);
+  opacity:0;transition:opacity var(--transition);
+}
+.article-card:hover{border-color:var(--border2);transform:translateY(-2px)}
+.article-card:hover::before{opacity:1}
+.card-badge{
+  position:absolute;top:12px;right:12px;
+  font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;
+  background:rgba(139,105,20,0.1);color:var(--gold);
+  border:1px solid rgba(139,105,20,0.22);
+  padding:3px 8px;border-radius:20px;
+}
+.card-img{
+  width:100%;height:160px;object-fit:cover;
+  border-radius:var(--radius);margin-bottom:1rem;border:1px solid var(--border);
+}
+.article-category{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:0.68rem;letter-spacing:0.15em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:0.8rem;
+}
+.article-category::before{content:'⬤';font-size:0.5rem}
+.article-title{
+  font-family:var(--font-serif);
+  font-size:1.2rem;font-weight:800;line-height:1.3;
+  color:var(--text);margin-bottom:0.8rem;
+}
+.article-excerpt{
+  font-size:0.875rem;color:var(--text);line-height:1.7;margin-bottom:1rem;
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
+}
+.article-meta-row{
+  display:flex;align-items:center;gap:0.8rem;
+  font-size:0.75rem;color:var(--text2);margin-top:auto;padding-top:1rem;
+  border-top:1px solid var(--border);
+}
+.author-avatar{
+  width:28px;height:28px;border-radius:50%;
+  background:var(--surface2);display:flex;align-items:center;justify-content:center;
+  font-size:0.62rem;font-weight:500;color:var(--gold);flex-shrink:0;
+}
+.dot{width:3px;height:3px;background:var(--text3);border-radius:50%}
+.card-read-time{
+  margin-left:auto;font-size:0.68rem;color:var(--text2);
+  display:flex;align-items:center;gap:4px;
+}
+
+/* Loading / Error / Empty */
+.loading-state{text-align:center;padding:5rem 1rem}
+.loading-spinner{
+  width:36px;height:36px;border:2px solid var(--border2);
+  border-top-color:var(--gold);border-radius:50%;
+  animation:spin 0.8s linear infinite;margin:0 auto 1.5rem;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-family:var(--font-serif);font-style:italic;color:var(--text);font-size:1.1rem}
+.error-state{
+  text-align:center;padding:3rem;background:var(--bg2);
+  border:1px solid rgba(176,42,26,0.2);border-radius:var(--radius-lg);
+}
+.error-state h3{font-family:var(--font-serif);color:#b02a1a;margin-bottom:0.5rem;font-size:1.3rem}
+.error-state p{color:var(--text2);font-size:0.9rem;margin-top:0.5rem}
+.empty-state{text-align:center;padding:5rem 1rem}
+.empty-state .ornament{font-size:2.5rem;color:var(--border);margin-bottom:1.5rem}
+.empty-state h3{font-family:var(--font-serif);font-size:1.5rem;color:var(--text);margin-bottom:0.5rem}
+.empty-state p{color:var(--text2);font-size:0.95rem}
+
+/* ====== CONTENT LAYOUT + SIDEBAR ====== */
+.content-layout{
+  display:grid;grid-template-columns:1fr 300px;
+  gap:3rem;margin-top:2rem;
+}
+.sidebar-section{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--radius-lg);padding:1.5rem;margin-bottom:1.5rem;
+}
+.sidebar-title{
+  font-size:0.72rem;letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:1.2rem;padding-bottom:0.8rem;border-bottom:1px solid var(--border);
+}
+.sidebar-article{
+  display:flex;gap:10px;margin-bottom:1rem;
+  padding-bottom:1rem;border-bottom:1px solid var(--border);cursor:pointer;
+  transition:all var(--transition);
+}
+.sidebar-article:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none}
+.sidebar-article:hover .sidebar-text strong{color:var(--gold)}
+.sidebar-num{font-family:var(--font-serif);font-size:1.4rem;font-weight:400;color:var(--text2);min-width:28px;line-height:1}
+.sidebar-text{font-size:0.82rem;color:var(--text);line-height:1.5}
+.sidebar-text strong{display:block;color:var(--text);font-weight:400;margin-bottom:2px;transition:color var(--transition)}
+/* Sidebar newsletter */
+.sidebar-newsletter{margin-top:0.5rem}
+.sidebar-newsletter input{
+  width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);
+  padding:8px 12px;font-family:var(--font-sans);font-size:0.82rem;
+  color:var(--text);outline:none;margin-bottom:8px;transition:border-color var(--transition);
+}
+.sidebar-newsletter input:focus{border-color:var(--border2)}
+.sidebar-newsletter input::placeholder{color:var(--text3)}
+.sidebar-newsletter button{
+  width:100%;background:var(--gold);border:none;border-radius:var(--radius);
+  padding:8px;font-family:var(--font-sans);font-size:0.78rem;font-weight:500;
+  letter-spacing:0.08em;text-transform:uppercase;color:#fff;cursor:pointer;
+  transition:background var(--transition);
+}
+.sidebar-newsletter button:hover{background:var(--gold2)}
+/* Tags cloud */
+.tag-cloud{display:flex;flex-wrap:wrap;gap:6px}
+.tag-pill{
+  font-size:0.7rem;letter-spacing:0.08em;padding:4px 10px;
+  border-radius:20px;border:1px solid var(--border2);color:var(--text2);
+  cursor:pointer;transition:all var(--transition);background:none;
+}
+.tag-pill:hover{border-color:var(--border2);color:var(--text2)}
+
+/* ====== SEARCH + FILTER ====== */
+.search-bar{
+  display:flex;align-items:center;gap:10px;
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--radius);padding:10px 14px;
+  margin-bottom:1.5rem;transition:border-color var(--transition);
+}
+.search-bar:focus-within{border-color:var(--border2)}
+.search-bar svg{color:var(--text3);flex-shrink:0;width:16px;height:16px}
+.search-input{background:none;border:none;outline:none;color:var(--text);font-family:var(--font-sans);font-size:0.9rem;width:100%}
+.search-input::placeholder{color:var(--text3)}
+.search-clear{
+  background:none;border:none;color:var(--text3);cursor:pointer;
+  font-size:1rem;padding:0 2px;transition:color var(--transition);
+  display:none;
+}
+.search-clear.visible{display:block}
+.search-clear:hover{color:var(--gold)}
+.filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem;align-items:center}
+.filter-pill{
+  padding:6px 14px;border-radius:20px;font-size:0.75rem;letter-spacing:0.08em;
+  border:1px solid var(--border2);background:none;color:var(--text2);
+  cursor:pointer;transition:all var(--transition);
+}
+.filter-pill:hover{border-color:var(--border2);color:var(--text2)}
+.filter-pill.active{background:rgba(139,105,20,0.08);border-color:var(--gold);color:var(--gold)}
+.results-count{font-size:0.75rem;color:var(--text2);margin-left:auto}
+.pagination{
+  display:flex;align-items:center;justify-content:center;gap:8px;margin-top:3rem;
+}
+.page-btn{
+  width:36px;height:36px;border-radius:var(--radius);
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.82rem;background:none;border:1px solid var(--border);
+  color:var(--text3);cursor:pointer;transition:all var(--transition);
+}
+.page-btn:hover{border-color:var(--border2);color:var(--text)}
+.page-btn.active{background:rgba(139,105,20,0.08);border-color:var(--gold);color:var(--gold)}
+.page-btn:disabled{opacity:0.3;cursor:not-allowed}
+
+/* ====== ARTICLE VIEW ====== */
+#article-view{display:none}
+.article-view-inner{max-width:760px;margin:0 auto;padding:3rem 2rem}
+/* Bouton fermer flottant */
+.article-close-bar{
+  position:sticky;top:64px;z-index:150;
+  background:rgba(250,249,246,0.97);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:0.75rem 2rem;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.article-close-inner{max-width:760px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;width:100%}
+.back-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:0.78rem;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--text2);text-decoration:none;cursor:pointer;
+  border:none;background:none;padding:0;
+  transition:color var(--transition);
+}
+.back-btn:hover{color:var(--gold)}
+.back-btn svg{width:14px;height:14px}
+.article-close-actions{display:flex;align-items:center;gap:8px}
+.article-action-btn{
+  background:none;border:1px solid var(--border);border-radius:var(--radius);
+  padding:5px 12px;font-size:0.72rem;letter-spacing:0.08em;text-transform:uppercase;
+  color:var(--text3);cursor:pointer;transition:all var(--transition);
+  display:flex;align-items:center;gap:5px;
+}
+.article-action-btn:hover{border-color:var(--border2);color:var(--gold)}
+.av-progress{height:2px;background:var(--border);position:relative;flex:1;max-width:120px;border-radius:2px;overflow:hidden}
+.av-progress-bar{height:100%;background:var(--gold);width:0;transition:width 0.2s}
+.av-category{font-size:0.72rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem}
+.av-title{
+  font-family:var(--font-serif);font-size:clamp(1.8rem,4vw,2.8rem);
+  font-weight:800;line-height:1.2;color:var(--text);margin-bottom:1.5rem;
+}
+.av-meta{
+  display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap;
+  padding:1.2rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  margin-bottom:2rem;font-size:0.8rem;color:var(--text2);
+}
+.av-author{display:flex;align-items:center;gap:8px}
+.av-author-avatar{
+  width:36px;height:36px;border-radius:50%;background:var(--surface2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.7rem;font-weight:500;color:var(--gold);
+}
+.av-author-name{color:var(--text);font-size:0.85rem;font-weight:500}
+.av-author-title{font-size:0.72rem;color:var(--text2)}
+.av-body{font-family:var(--font-serif);font-size:1.15rem;font-weight:400;line-height:1.9;color:var(--text)}
+.av-body p{margin-bottom:1.5em}
+.av-body h2{font-size:1.5rem;font-weight:800;color:var(--text);margin:2.5em 0 0.8em;padding-left:1rem;border-left:3px solid var(--gold)}
+.av-body h3{font-size:1.2rem;font-weight:800;color:#000;margin:2em 0 0.6em}
+.av-body blockquote{
+  background:var(--bg2);border-left:3px solid var(--gold);
+  padding:1rem 1.5rem;margin:2em 0;border-radius:0 var(--radius) var(--radius) 0;
+  font-style:italic;color:var(--text2);
+}
+.av-cover{width:100%;max-height:340px;object-fit:cover;border-radius:var(--radius-lg);margin-bottom:2rem;border:1px solid var(--border)}
+
+/* Article interactions */
+.av-interactions{
+  display:flex;align-items:center;gap:1.5rem;
+  margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);
+}
+.like-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:8px 18px;border-radius:var(--radius);
+  font-size:0.82rem;background:none;
+  border:1px solid var(--border);color:var(--text2);
+  cursor:pointer;transition:all var(--transition);
+}
+.like-btn:hover,.like-btn.liked{background:rgba(139,105,20,0.07);border-color:var(--border2);color:var(--gold)}
+.like-btn.liked{cursor:default}
+.like-icon{font-size:1rem}
+.comment-count-label{font-size:0.78rem;color:var(--text2)}
+/* Share button */
+.share-btn{
+  margin-left:auto;display:inline-flex;align-items:center;gap:6px;
+  padding:7px 14px;border-radius:var(--radius);
+  font-size:0.78rem;background:none;
+  border:1px solid var(--border);color:var(--text3);
+  cursor:pointer;transition:all var(--transition);
+}
+.share-btn:hover{border-color:var(--border2);color:var(--gold)}
+
+/* Comments */
+.comments-section{margin-top:2.5rem;padding-top:2rem;border-top:1px solid var(--border)}
+.comments-title{font-family:var(--font-serif);font-size:1.1rem;font-weight:400;color:var(--text);margin-bottom:1.5rem}
+.comment-list{list-style:none;margin-bottom:1.5rem}
+.comment-item{padding:1rem;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:0.75rem}
+.comment-author{font-size:0.8rem;font-weight:500;color:var(--text);display:flex;justify-content:space-between;margin-bottom:0.4rem}
+.comment-date{font-size:0.72rem;color:var(--text2);font-weight:400}
+.comment-text{font-size:0.87rem;color:var(--text);line-height:1.6}
+.comment-form{display:flex;gap:8px;align-items:flex-start;margin-top:1rem}
+.comment-input{
+  flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);
+  padding:10px 14px;font-family:var(--font-sans);font-size:0.85rem;
+  color:var(--text);outline:none;resize:none;transition:border-color var(--transition);
+}
+.comment-input:focus{border-color:var(--border2)}
+.comment-input::placeholder{color:var(--text3)}
+.comment-submit{
+  padding:10px 18px;background:var(--gold);border:none;border-radius:var(--radius);
+  font-family:var(--font-sans);font-size:0.78rem;font-weight:500;
+  letter-spacing:0.08em;text-transform:uppercase;color:#fff;
+  cursor:pointer;white-space:nowrap;transition:background var(--transition);flex-shrink:0;
+}
+.comment-submit:hover{background:var(--gold2)}
+.comment-submit:disabled{opacity:0.5;cursor:wait}
+/* Related articles */
+.related-section{margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border)}
+.related-title{font-family:var(--font-serif);font-size:1.1rem;font-weight:400;color:var(--text);margin-bottom:1.2rem;display:flex;align-items:center;gap:10px}
+.related-title::before{content:'';width:3px;height:18px;background:var(--gold);border-radius:2px;flex-shrink:0}
+.related-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem}
+.related-card{
+  background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);
+  padding:1rem;cursor:pointer;transition:all var(--transition);
+}
+.related-card:hover{border-color:var(--border2);transform:translateY(-2px)}
+.related-card-title{font-family:var(--font-serif);font-size:0.95rem;font-weight:800;color:var(--text);margin-bottom:6px;line-height:1.3}
+.related-card-author{font-size:0.72rem;color:var(--text3)}
+
+/* ====== FOOTER ENRICHI ====== */
+footer{
+  border-top:2px solid var(--gold3);background:#0d0b07;
+  padding:3rem 2rem 2rem;margin-top:4rem;
+}
+.footer-inner{max-width:1200px;margin:0 auto}
+.footer-top{
+  display:grid;grid-template-columns:2fr 1fr 1fr 1.5fr;gap:3rem;margin-bottom:2.5rem;
+}
+.footer-brand{font-family:var(--font-serif);font-size:1.3rem;color:var(--gold3);margin-bottom:0.8rem;display:flex;align-items:center;gap:8px}
+.footer-desc{font-size:0.82rem;color:rgba(245,237,224,0.65);line-height:1.7;max-width:280px;margin-bottom:1.2rem}
+.footer-social{display:flex;gap:8px}
+.footer-social-btn{
+  width:32px;height:32px;border-radius:var(--radius);
+  border:1px solid rgba(245,237,224,0.15);background:none;
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.8rem;color:rgba(245,237,224,0.5);cursor:pointer;
+  transition:all var(--transition);
+}
+.footer-social-btn:hover{border-color:var(--gold3);color:var(--gold3)}
+.footer-col-title{font-size:0.68rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold3);margin-bottom:1rem}
+.footer-links{list-style:none}
+.footer-links li{margin-bottom:0.6rem}
+.footer-links a{font-size:0.82rem;color:rgba(245,237,224,0.6);text-decoration:none;transition:color var(--transition);cursor:pointer;display:flex;align-items:center;gap:6px}
+.footer-links a:hover{color:#f5ede0}
+.footer-links a::before{content:'›';color:rgba(245,237,224,0.2);transition:color var(--transition)}
+.footer-links a:hover::before{color:var(--gold3)}
+.footer-newsletter{margin-top:0}
+.footer-newsletter p{font-size:0.78rem;color:rgba(245,237,224,0.5);margin-bottom:0.8rem;line-height:1.5}
+.footer-newsletter-row{display:flex;gap:6px}
+.footer-newsletter-row input{
+  flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(245,237,224,0.15);border-radius:var(--radius);
+  padding:8px 12px;font-family:var(--font-sans);font-size:0.8rem;
+  color:#f5ede0;outline:none;transition:border-color var(--transition);
+}
+.footer-newsletter-row input:focus{border-color:var(--gold3)}
+.footer-newsletter-row input::placeholder{color:rgba(245,237,224,0.3)}
+.footer-newsletter-row button{
+  background:var(--gold);border:none;border-radius:var(--radius);
+  padding:8px 14px;font-family:var(--font-sans);font-size:0.72rem;font-weight:500;
+  letter-spacing:0.08em;text-transform:uppercase;color:#fff;cursor:pointer;
+  white-space:nowrap;transition:background var(--transition);
+}
+.footer-newsletter-row button:hover{background:var(--gold2)}
+.footer-divider{height:1px;background:rgba(245,237,224,0.1);margin-bottom:1.5rem}
+.footer-bottom{
+  display:flex;align-items:center;justify-content:space-between;
+  font-size:0.75rem;color:rgba(245,237,224,0.4);flex-wrap:wrap;gap:0.5rem;
+}
+.footer-bottom-links{display:flex;gap:1.5rem}
+.footer-bottom-links a{color:rgba(245,237,224,0.4);text-decoration:none;font-size:0.72rem;cursor:pointer;transition:color var(--transition)}
+.footer-bottom-links a:hover{color:rgba(245,237,224,0.7)}
+
+/* ====== TOAST ====== */
+.toast{
+  position:fixed;bottom:2rem;right:2rem;z-index:1000;
+  background:var(--bg2);border:1px solid var(--border2);
+  border-radius:var(--radius-lg);padding:12px 18px;
+  font-size:0.85rem;color:var(--text);
+  display:flex;align-items:center;gap:8px;
+  transform:translateY(100px);opacity:0;
+  transition:all 0.3s ease;pointer-events:none;
+  box-shadow:0 8px 32px rgba(0,0,0,0.4);
+}
+.toast.show{transform:translateY(0);opacity:1}
+.toast-icon{font-size:1rem}
+
+/* ====== MOBILE NAV ====== */
+.mobile-nav{
+  position:fixed;top:64px;left:0;right:0;z-index:190;
+  background:rgba(250,249,246,0.99);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  padding:1rem 2rem 1.5rem;
+  transform:translateY(-100%);opacity:0;
+  transition:all 0.25s ease;pointer-events:none;
+}
+.mobile-nav.open{transform:translateY(0);opacity:1;pointer-events:all}
+.mobile-nav a{
+  display:block;padding:10px 0;font-size:0.85rem;letter-spacing:0.1em;text-transform:uppercase;
+  color:var(--text2);text-decoration:none;border-bottom:1px solid var(--border);
+  cursor:pointer;
+}
+.mobile-nav a:last-child{border-bottom:none;color:var(--gold)}
+.mobile-nav-search{
+  display:flex;align-items:center;gap:8px;
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:var(--radius);padding:8px 12px;margin-bottom:1rem;
+}
+.mobile-nav-search input{
+  flex:1;background:none;border:none;outline:none;
+  color:var(--text);font-family:var(--font-sans);font-size:0.85rem;
+}
+.mobile-nav-search input::placeholder{color:var(--text3)}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--surface2);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--text3)}
+
+/* ====== ANIMATIONS ====== */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(12px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes fadeIn{
+  from{opacity:0}
+  to{opacity:1}
+}
+
+/* ====== RESPONSIVE ====== */
+@media(max-width:1100px){
+  .footer-top{grid-template-columns:1fr 1fr}
+  .footer-top>:first-child{grid-column:1/-1}
+}
+@media(max-width:900px){
+  .content-layout{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .footer-top{grid-template-columns:1fr 1fr}
+  .hero-stats{gap:1.5rem}
+  .news-card{min-width:calc(50% - 0.75rem)}
+}
+@media(max-width:640px){
+  nav{display:none}
+  .burger{display:block}
+  .hero{padding:0 0 40px}
+  .hero-banner{height:220px}
+  .hero-inner{padding:2rem 1.5rem 0}
+  main,footer{padding-left:1.2rem;padding-right:1.2rem}
+  .footer-top{grid-template-columns:1fr}
+  .articles-grid{grid-template-columns:1fr}
+  .news-card{min-width:calc(90% - 0.5rem)}
+  .articles-grid.list-view .card-img{display:none}
+  .section-actions{flex-direction:column;align-items:flex-end;gap:0.5rem}
+}
+</style>
 </head>
 <body>
 
-  <!-- ==========================================
-       ÉCRAN DE VERROUILLAGE
-  ========================================== -->
-  <div id="lock-screen">
-    <div class="lock-card">
-      <div class="lock-logo">Publication Professionnelle</div>
-      <h1 class="lock-title">Revue Juridique</h1>
-      <p class="lock-subtitle">Doctrine · Jurisprudence · Actualité</p>
-      <div class="lock-rule"></div>
-      <p style="font-family: var(--serif-accent); font-style: italic; color: var(--text-muted); font-size: 0.9rem; margin-bottom: 2rem;">
-        Veuillez vous identifier pour accéder aux publications
-      </p>
-      <div class="lock-field">
-        <label for="input-prenom">Prénom</label>
-        <input type="text" id="input-prenom" placeholder="Votre prénom" autocomplete="given-name" />
+<!-- SEARCH OVERLAY -->
+<div class="search-overlay" id="searchOverlay">
+  <div class="search-overlay-inner">
+    <div class="search-overlay-bar">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" class="search-overlay-input" id="overlaySearchInput" placeholder="Rechercher un article, auteur, matière…" oninput="handleOverlaySearch()">
+      <button class="search-close-btn" onclick="closeSearchOverlay()">✕</button>
+    </div>
+    <div class="search-results" id="overlaySearchResults"></div>
+    <p class="search-hint" id="overlaySearchHint">Saisissez au moins 2 caractères pour lancer la recherche</p>
+  </div>
+</div>
+
+<!-- LOCK SCREEN -->
+<div id="lock-screen">
+  <div class="lock-card">
+    <img src="logo.png" alt="Revue Juridique" style="height:52px;width:auto;margin:0 auto 1.2rem;display:block">
+    <p class="lock-subtitle">Doctrine · Jurisprudence · Actualité</p>
+    <div class="lock-rule"></div>
+    <div class="lock-field">
+      <label for="input-prenom">Prénom</label>
+      <input type="text" id="input-prenom" placeholder="Votre prénom" autocomplete="given-name">
+    </div>
+    <div class="lock-field">
+      <label for="input-nom">Nom</label>
+      <input type="text" id="input-nom" placeholder="Votre nom de famille" autocomplete="family-name">
+    </div>
+    <div class="lock-error" id="lock-error"></div>
+    <button class="lock-btn" onclick="unlockApp()">Accéder à la revue</button>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header id="main-header" style="display:none">
+  <div class="header-inner">
+    <a class="logo" onclick="showHome()">
+      <img src="logo.png" alt="Revue Juridique" class="logo-img">
+    </a>
+    <nav id="mainNav">
+      <a onclick="filterByCategory('all')" class="active" data-cat="all">Accueil</a>
+      <a onclick="filterByCategory('Doctrine')" data-cat="Doctrine">Doctrine</a>
+      <a onclick="filterByCategory('Jurisprudence')" data-cat="Jurisprudence">Jurisprudence</a>
+      <a onclick="filterByCategory('Actualité')" data-cat="Actualité">Actualité</a>
+      <a onclick="filterByCategory('Contrats')" data-cat="Contrats">Contrats</a>
+      <a onclick="filterByCategory('Procédure')" data-cat="Procédure">Procédure</a>
+    </nav>
+    <div class="header-right">
+      <button class="header-search-btn" onclick="openSearchOverlay()" title="Recherche">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </button>
+      <div class="header-user" onclick="logoutUser()" title="Déconnexion">
+        <div class="user-dot" id="user-initials"></div>
+        <span id="header-username"></span>
+        <span style="font-size:0.7rem;opacity:0.5">✕</span>
       </div>
-      <div class="lock-field">
-        <label for="input-nom">Nom</label>
-        <input type="text" id="input-nom" placeholder="Votre nom de famille" autocomplete="family-name" />
+      <button class="burger" onclick="toggleMobileNav()" aria-label="Menu">&#9776;</button>
+    </div>
+  </div>
+</header>
+
+<div class="mobile-nav" id="mobileNav">
+  <div class="mobile-nav-search">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14" style="color:var(--text3)"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" placeholder="Rechercher…" oninput="handleSearch()" id="mobileSearchInput">
+  </div>
+  <a onclick="showHome();toggleMobileNav()">Accueil</a>
+  <a onclick="filterByCategory('Doctrine');toggleMobileNav()">Doctrine</a>
+  <a onclick="filterByCategory('Jurisprudence');toggleMobileNav()">Jurisprudence</a>
+  <a onclick="filterByCategory('Actualité');toggleMobileNav()">Actualité</a>
+  <a onclick="filterByCategory('Contrats');toggleMobileNav()">Contrats</a>
+  <a onclick="filterByCategory('Procédure');toggleMobileNav()">Procédure</a>
+  <a onclick="logoutUser()">Déconnexion</a>
+</div>
+
+<!-- NEWS TICKER -->
+<div class="news-ticker" id="newsTicker" style="display:none">
+  <span class="ticker-label">⚡ En direct</span>
+  <div class="ticker-track-wrap">
+    <div class="ticker-track" id="tickerTrack">
+      <!-- Filled by JS -->
+    </div>
+  </div>
+</div>
+
+<!-- HOME VIEW -->
+<div id="home-view" style="display:none">
+
+  <section class="hero" role="banner">
+    <!-- BANNIÈRE -->
+    <div class="hero-banner">
+      <div class="hero-banner-inner">
+        <p class="hero-banner-label">Publication Professionnelle · Depuis 2024</p>
+        <h2 class="hero-banner-title">Revue <em>Juridique</em></h2>
+        <div class="hero-banner-rule"></div>
       </div>
-      <div class="lock-error" id="lock-error"></div>
-      <button class="lock-btn" onclick="unlockApp()">Accéder à la revue</button>
+    </div>
+    <div class="hero-bg"></div>
+    <div class="hero-lines"></div>
+    <div class="hero-inner">
+      <p class="hero-label">Publication Professionnelle</p>
+      <h1>L'excellence du droit,<br><em>au fil des analyses</em></h1>
+      <p class="hero-sub">Analyses doctrinales, commentaires de jurisprudence et études de droit rédigés par des praticiens de référence.</p>
+      <div class="hero-cta">
+        <button class="btn btn-primary" onclick="document.getElementById('articles-section').scrollIntoView({behavior:'smooth'})">Explorer les articles</button>
+        <button class="btn btn-outline" onclick="openSearchOverlay()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          Recherche avancée
+        </button>
+      </div>
+      <div class="hero-stats" id="heroStats"></div>
+    </div>
+  </section>
+
+  <!-- ACTUALITÉS SLIDER -->
+  <div class="slider-section" id="sliderSection" style="display:none">
+    <div class="slider-section-inner">
+      <div class="slider-header">
+        <div class="slider-label">Actualités récentes</div>
+        <div class="slider-controls">
+          <div class="slider-dots" id="sliderDots"></div>
+          <button class="slider-btn" onclick="slidePrev()">‹</button>
+          <button class="slider-btn" onclick="slideNext()">›</button>
+        </div>
+      </div>
+      <div class="slider-track-container">
+        <div class="slider-track" id="sliderTrack"></div>
+      </div>
     </div>
   </div>
 
-  <!-- ==========================================
-       EN-TÊTE
-  ========================================== -->
-  <header id="main-header" style="display:none;">
-    <div class="header-top">
-      <span class="header-dateline" id="header-date"></span>
-      <span class="header-user" onclick="logoutUser()" title="Déconnexion">
-        <span id="header-username"></span>
-        <span style="font-size:0.9rem;">✕</span>
-      </span>
-    </div>
-    <div class="header-main">
-      <div class="header-kicker">Publication Professionnelle</div>
-      <h1 class="header-title">REVUE JURIDIQUE</h1>
-      <div class="header-rule">
-        <span class="header-rule-ornament">✦ ✦ ✦</span>
+  <main id="main-content">
+    <div id="articles-section">
+      <div class="section-header">
+        <h2 class="section-title" id="sectionTitle">Articles récents</h2>
+        <div class="section-actions">
+          <div class="view-toggle">
+            <button class="view-toggle-btn active" id="gridViewBtn" onclick="setView('grid')" title="Vue grille">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            </button>
+            <button class="view-toggle-btn" id="listViewBtn" onclick="setView('list')" title="Vue liste">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="search-bar">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        <input type="text" class="search-input" id="searchInput" placeholder="Rechercher un article, un auteur, une matière..." oninput="handleSearch()">
+        <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
+      </div>
+
+      <div class="filter-bar" id="filterBar">
+        <span class="results-count" id="resultsCount"></span>
+      </div>
+
+      <div class="content-layout">
+        <div>
+          <div class="articles-grid" id="articlesGrid">
+            <div class="loading-state">
+              <div class="loading-spinner"></div>
+              <p class="loading-text">Chargement des publications…</p>
+            </div>
+          </div>
+          <div class="pagination" id="pagination"></div>
+        </div>
+        <aside class="sidebar">
+          <div class="sidebar-section">
+            <div class="sidebar-title">Articles populaires</div>
+            <div id="popularArticles"><p style="font-size:0.82rem;color:var(--text3)">Chargement…</p></div>
+          </div>
+          <div class="sidebar-section">
+            <div class="sidebar-title">Mots-clés</div>
+            <div class="tag-cloud" id="tagCloud"></div>
+          </div>
+          <div class="sidebar-section">
+            <div class="sidebar-title">Newsletter</div>
+            <p style="font-size:0.82rem;color:var(--text2);line-height:1.6;margin-bottom:0.8rem">Recevez les nouvelles publications directement dans votre boîte mail.</p>
+            <div class="sidebar-newsletter">
+              <input type="email" placeholder="votre@email.com" id="sidebarEmail">
+              <button onclick="subscribeNewsletter()">S'abonner</button>
+            </div>
+          </div>
+          <div class="sidebar-section">
+            <div class="sidebar-title">La revue</div>
+            <p style="font-size:0.82rem;color:var(--text2);line-height:1.7">
+              Revue juridique professionnelle dédiée à l'analyse approfondie du droit et à la diffusion de la doctrine juridique contemporaine.
+            </p>
+          </div>
+        </aside>
       </div>
     </div>
-    <nav class="header-nav">
-      <a href="#">Doctrine</a>
-      <a href="#">Jurisprudence</a>
-      <a href="#">Actualité législative</a>
-      <a href="#">Contrats</a>
-      <a href="#">Procédure</a>
-    </nav>
-  </header>
+  </main>
 
-  <!-- ==========================================
-       CONTENU PRINCIPAL
-  ========================================== -->
-  <main id="main-content" style="display:none;">
-    <div id="articles-container">
-      <div class="loading-state">
-        <div class="loading-spinner"></div>
-        <p class="loading-text">Chargement des publications…</p>
-   
+</div><!-- end home-view -->
+
+<!-- ARTICLE VIEW -->
+<div id="article-view">
+  <div class="article-close-bar">
+    <div class="article-close-inner">
+      <button class="back-btn" onclick="showHome()">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Retour aux articles
+      </button>
+      <div class="article-close-actions">
+        <div class="av-progress"><div class="av-progress-bar" id="readProgress"></div></div>
+        <button class="article-action-btn" onclick="shareArticle()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          Partager
+        </button>
+        <button class="article-action-btn" onclick="printArticle()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          Imprimer
+        </button>
+        <button class="article-action-btn" onclick="showHome()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="12" height="12"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          Fermer
+        </button>
+      </div>
+    </div>
+  </div>
+  <div id="article-view-content"></div>
+</div>
+
+<!-- FOOTER -->
+<footer id="main-footer" style="display:none">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand"><img src="logo.png" alt="Revue Juridique" style="height:40px;width:auto;display:block"></div>
+        <p class="footer-desc">Publication professionnelle à destination des praticiens du droit. Les opinions exprimées n'engagent que leurs auteurs.</p>
+        <div class="footer-social">
+          <button class="footer-social-btn" title="LinkedIn" onclick="showToast('Lien LinkedIn bientôt disponible.')">in</button>
+          <button class="footer-social-btn" title="X / Twitter" onclick="showToast('Lien X bientôt disponible.')">𝕏</button>
+          <button class="footer-social-btn" title="RSS" onclick="showToast('Flux RSS bientôt disponible.')">⌁</button>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Rubriques</div>
+        <ul class="footer-links">
+          <li><a onclick="filterByCategory('Doctrine')">Doctrine</a></li>
+          <li><a onclick="filterByCategory('Jurisprudence')">Jurisprudence</a></li>
+          <li><a onclick="filterByCategory('Actualité')">Actualité législative</a></li>
+          <li><a onclick="filterByCategory('Contrats')">Contrats</a></li>
+          <li><a onclick="filterByCategory('Procédure')">Procédure</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Informations</div>
+        <ul class="footer-links">
+          <li><a onclick="showToast('Page en cours de rédaction.')">À propos</a></li>
+          <li><a onclick="showToast('Page en cours de rédaction.')">Politique éditoriale</a></li>
+          <li><a onclick="showToast('Page en cours de rédaction.')">Mentions légales</a></li>
+          <li><a onclick="showToast('Page en cours de rédaction.')">Contact</a></li>
+          <li><a onclick="logoutUser()">Déconnexion</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Newsletter</div>
+        <div class="footer-newsletter">
+          <p>Recevez les dernières publications et actualités juridiques.</p>
+          <div class="footer-newsletter-row">
+            <input type="email" placeholder="votre@email.com" id="footerEmail">
+            <button onclick="subscribeNewsletter('footer')">OK</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-divider"></div>
+    <div class="footer-bottom">
+      <span>© <span id="currentYear"></span> Revue Juridique. Tous droits réservés.</span>
+      <div class="footer-bottom-links">
+        <a onclick="showToast('Page en cours de rédaction.')">Confidentialité</a>
+        <a onclick="showToast('Page en cours de rédaction.')">CGU</a>
+        <a onclick="showToast('Page en cours de rédaction.')">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <span class="toast-icon" id="toastIcon">ℹ</span>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+// ============================================================
+// CONFIGURATION
+// ============================================================
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbziAmKSGxtAqebUM1g6_f_wlntLudyJ3MuCfPqUtICOeQjk7IgTkt28nmLcJVnTGcCP_w/exec";
+
+let currentUser = null;
+let allArticles = [];
+let currentFilter = 'all';
+let currentSearch = '';
+let currentPage = 1;
+let currentView = 'grid';
+let currentArticleId = null;
+const PER_PAGE = 9;
+
+// Slider state
+let sliderIndex = 0;
+let sliderItems = [];
+let sliderInterval = null;
+
+// ============================================================
+// INIT
+// ============================================================
+window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/service-worker.js').catch(() => {});
+  }
+
+  const saved = loadUser();
+  if (saved) {
+    currentUser = saved;
+    showApp();
+  }
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeSearchOverlay();
+    if (document.getElementById('mobileNav').classList.contains('open')) toggleMobileNav();
+  }
+  if (e.key === 'Enter' && !document.getElementById('lock-screen').classList.contains('hidden')) {
+    unlockApp();
+  }
+  // Ctrl+K to open search
+  if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+    e.preventDefault();
+    openSearchOverlay();
+  }
+});
+
+// Reading progress
+window.addEventListener('scroll', () => {
+  const articleView = document.getElementById('article-view');
+  if (articleView.style.display !== 'none' && articleView.style.display !== '') {
+    const content = document.getElementById('article-view-content');
+    if (!content) return;
+    const scrollTop = window.scrollY;
+    const docHeight = content.scrollHeight - window.innerHeight;
+    const progress = docHeight > 0 ? Math.min(100, (scrollTop / docHeight) * 100) : 0;
+    const bar = document.getElementById('readProgress');
+    if (bar) bar.style.width = progress + '%';
+  }
+});
+
+// ============================================================
+// AUTH
+// ============================================================
+function loadUser() {
+  const prenom = localStorage.getItem('rj_prenom');
+  const nom = localStorage.getItem('rj_nom');
+  if (prenom && nom) return { prenom, nom, fullName: `${prenom} ${nom}` };
+  return null;
+}
+
+function unlockApp() {
+  const prenom = document.getElementById('input-prenom').value.trim();
+  const nom = document.getElementById('input-nom').value.trim();
+  const errEl = document.getElementById('lock-error');
+  if (!prenom || !nom) {
+    errEl.textContent = 'Veuillez renseigner votre prénom et votre nom.';
+    return;
+  }
+  errEl.textContent = '';
+  localStorage.setItem('rj_prenom', prenom);
+  localStorage.setItem('rj_nom', nom);
+  currentUser = { prenom, nom, fullName: `${prenom} ${nom}` };
+  showApp();
+}
+
+function showApp() {
+  document.getElementById('lock-screen').classList.add('hidden');
+  document.getElementById('main-header').style.display = 'block';
+  document.getElementById('home-view').style.display = 'block';
+  document.getElementById('main-footer').style.display = 'block';
+  document.getElementById('newsTicker').style.display = 'flex';
+  document.getElementById('header-username').textContent = currentUser.fullName;
+  document.getElementById('user-initials').textContent = getInitials(currentUser.fullName);
+  loadArticles();
+}
+
+function logoutUser() {
+  if (!confirm('Se déconnecter et effacer votre profil local ?')) return;
+  localStorage.removeItem('rj_prenom');
+  localStorage.removeItem('rj_nom');
+  location.reload();
+}
+
+// ============================================================
+// NAVIGATION
+// ============================================================
+function showHome() {
+  document.getElementById('home-view').style.display = 'block';
+  document.getElementById('article-view').style.display = 'none';
+  document.getElementById('article-view-content').innerHTML = '';
+  document.getElementById('main-footer').style.display = 'block';
+  currentArticleId = null;
+  window.scrollTo(0, 0);
+}
+
+function toggleMobileNav() {
+  document.getElementById('mobileNav').classList.toggle('open');
+}
+
+function filterByCategory(cat) {
+  showHome();
+  currentFilter = cat;
+  currentPage = 1;
+  // Update nav active state
+  document.querySelectorAll('#mainNav a').forEach(a => {
+    a.classList.toggle('active', a.dataset.cat === cat);
+  });
+  // Update section title
+  const titles = {
+    all: 'Articles récents',
+    Doctrine: 'Doctrine',
+    Jurisprudence: 'Jurisprudence',
+    'Actualité': 'Actualité législative',
+    Contrats: 'Contrats',
+    'Procédure': 'Procédure',
+  };
+  document.getElementById('sectionTitle').textContent = titles[cat] || cat;
+  renderAll();
+  setTimeout(() => {
+    document.getElementById('articles-section').scrollIntoView({ behavior: 'smooth' });
+  }, 100);
+}
+
+function setView(v) {
+  currentView = v;
+  document.getElementById('gridViewBtn').classList.toggle('active', v === 'grid');
+  document.getElementById('listViewBtn').classList.toggle('active', v === 'list');
+  const grid = document.getElementById('articlesGrid');
+  grid.classList.toggle('list-view', v === 'list');
+}
+
+// ============================================================
+// SEARCH OVERLAY
+// ============================================================
+function openSearchOverlay() {
+  document.getElementById('searchOverlay').classList.add('open');
+  setTimeout(() => document.getElementById('overlaySearchInput').focus(), 50);
+}
+
+function closeSearchOverlay() {
+  document.getElementById('searchOverlay').classList.remove('open');
+  document.getElementById('overlaySearchInput').value = '';
+  document.getElementById('overlaySearchResults').innerHTML = '';
+  document.getElementById('overlaySearchHint').style.display = 'block';
+}
+
+function handleOverlaySearch() {
+  const q = document.getElementById('overlaySearchInput').value.toLowerCase().trim();
+  const hint = document.getElementById('overlaySearchHint');
+  const results = document.getElementById('overlaySearchResults');
+
+  if (q.length < 2) {
+    results.innerHTML = '';
+    hint.style.display = 'block';
+    return;
+  }
+  hint.style.display = 'none';
+
+  const found = allArticles.filter(a => {
+    return (a.titre || '').toLowerCase().includes(q)
+      || (a.auteur || '').toLowerCase().includes(q)
+      || (a.introduction || '').toLowerCase().includes(q);
+  }).slice(0, 8);
+
+  if (!found.length) {
+    results.innerHTML = '<p style="color:var(--text3);font-size:0.85rem;text-align:center;padding:1rem">Aucun résultat pour cette recherche.</p>';
+    return;
+  }
+
+  results.innerHTML = found.map(a => {
+    const date = a.date ? new Date(a.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+    return `<div class="search-result-item" onclick="closeSearchOverlay();openArticle('${a.id}')">
+      <div class="search-result-title">${escHtml(a.titre || 'Sans titre')}</div>
+      <div class="search-result-meta">${a.auteur ? escHtml(a.auteur) + ' · ' : ''}${date}</div>
+    </div>`;
+  }).join('');
+}
+
+// ============================================================
+// LOAD ARTICLES
+// ============================================================
+async function loadArticles() {
+  try {
+    const resp = await fetch(APPS_SCRIPT_URL, { cache: 'no-store' });
+    const data = await resp.json();
+    if (data.error) throw new Error(data.error);
+    allArticles = (data.articles || []).sort((a, b) => new Date(b.date) - new Date(a.date));
+    renderAll();
+    renderTicker();
+    renderSlider();
+  } catch (err) {
+    document.getElementById('articlesGrid').innerHTML = `
+      <div class="error-state" style="grid-column:1/-1">
+        <h3>Connexion impossible</h3>
+        <p>Impossible de charger les articles. Vérifiez votre connexion ou contactez l'administrateur.</p>
+        <p>${err.message}</p>
+      </div>`;
+  }
+}
+
+// ============================================================
+// NEWS TICKER
+// ============================================================
+function renderTicker() {
+  const recent = allArticles.slice(0, 10);
+  if (!recent.length) return;
+  // Duplicate for seamless loop
+  const items = [...recent, ...recent].map(a =>
+    `<span class="ticker-item" onclick="openArticle('${a.id}')">${escHtml(a.titre || 'Sans titre')}</span>`
+  ).join('');
+  document.getElementById('tickerTrack').innerHTML = items;
+}
+
+// ============================================================
+// SLIDER (Actualités)
+// ============================================================
+function renderSlider() {
+  sliderItems = allArticles.slice(0, 6);
+  if (!sliderItems.length) return;
+  document.getElementById('sliderSection').style.display = 'block';
+
+  const track = document.getElementById('sliderTrack');
+  track.innerHTML = sliderItems.map(a => {
+    const date = a.date ? new Date(a.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' }) : '';
+    return `<div class="news-card" onclick="openArticle('${a.id}')">
+      <div class="news-card-tag">${escHtml(a.auteur || 'Publication')}</div>
+      <div class="news-card-title">${escHtml(a.titre || 'Sans titre')}</div>
+      <div class="news-card-excerpt">${escHtml(a.introduction || getExcerpt(a) || '')}</div>
+      <div class="news-card-date">${date}</div>
+    </div>`;
+  }).join('');
+
+  // Dots
+  const dotsContainer = document.getElementById('sliderDots');
+  const visibleCount = getSliderVisible();
+  const maxIndex = Math.max(0, sliderItems.length - visibleCount);
+  dotsContainer.innerHTML = '';
+  for (let i = 0; i <= maxIndex; i++) {
+    const btn = document.createElement('button');
+    btn.className = 'slider-dot' + (i === 0 ? ' active' : '');
+    btn.onclick = () => gotoSlide(i);
+    dotsContainer.appendChild(btn);
+  }
+
+  // Auto-advance
+  if (sliderInterval) clearInterval(sliderInterval);
+  sliderInterval = setInterval(slideNext, 5000);
+}
+
+function getSliderVisible() {
+  const w = window.innerWidth;
+  if (w <= 640) return 1;
+  if (w <= 900) return 2;
+  return 3;
+}
+
+function updateSliderPosition() {
+  const visible = getSliderVisible();
+  const maxIndex = Math.max(0, sliderItems.length - visible);
+  sliderIndex = Math.min(sliderIndex, maxIndex);
+  const card = document.querySelector('.news-card');
+  if (!card) return;
+  const cardW = card.offsetWidth + 24; // gap
+  document.getElementById('sliderTrack').style.transform = `translateX(-${sliderIndex * cardW}px)`;
+  // Dots
+  document.querySelectorAll('.slider-dot').forEach((d, i) => d.classList.toggle('active', i === sliderIndex));
+}
+
+function slideNext() {
+  const visible = getSliderVisible();
+  const maxIndex = Math.max(0, sliderItems.length - visible);
+  sliderIndex = sliderIndex >= maxIndex ? 0 : sliderIndex + 1;
+  updateSliderPosition();
+}
+
+function slidePrev() {
+  const visible = getSliderVisible();
+  const maxIndex = Math.max(0, sliderItems.length - visible);
+  sliderIndex = sliderIndex <= 0 ? maxIndex : sliderIndex - 1;
+  updateSliderPosition();
+}
+
+function gotoSlide(i) {
+  sliderIndex = i;
+  updateSliderPosition();
+  // Reset auto-advance
+  if (sliderInterval) clearInterval(sliderInterval);
+  sliderInterval = setInterval(slideNext, 5000);
+}
+
+window.addEventListener('resize', () => {
+  renderSlider();
+});
+
+// ============================================================
+// RENDER
+// ============================================================
+function renderAll() {
+  renderHeroStats();
+  renderArticles();
+  renderSidebar();
+  renderFilterBar();
+  renderTagCloud();
+}
+
+function renderHeroStats() {
+  const pub = allArticles.filter(a => a.statut !== 'draft');
+  const total = pub.length;
+  const auteurs = new Set(pub.map(a => a.auteur)).size;
+  const totalLikes = pub.reduce((s, a) => s + (a.likes?.count || 0), 0);
+  document.getElementById('heroStats').innerHTML = `
+    <div class="stat-item"><span class="stat-num">${total}</span><span class="stat-label">Articles publiés</span></div>
+    <div class="stat-item"><span class="stat-num">${auteurs}</span><span class="stat-label">Auteurs</span></div>
+    <div class="stat-item"><span class="stat-num">${totalLikes}</span><span class="stat-label">Appréciations</span></div>
+  `;
+}
+
+function renderFilterBar() {
+  const cats = [...new Set(allArticles.map(a => a.auteur).filter(Boolean))].slice(0, 8);
+  document.getElementById('filterBar').innerHTML = [
+    `<button class="filter-pill${currentFilter==='all'?' active':''}" onclick="setFilter('all')">Tous</button>`,
+    ...cats.map(c => `<button class="filter-pill${currentFilter===c?' active':''}" onclick="setFilter('${escHtml(c)}')">${escHtml(c)}</button>`)
+  ].join('') + `<span class="results-count" id="resultsCount"></span>`;
+}
+
+function renderTagCloud() {
+  const tags = [...new Set(allArticles.flatMap(a => (a.tags || [])).filter(Boolean))].slice(0, 15);
+  const cloud = document.getElementById('tagCloud');
+  if (!cloud) return;
+  if (!tags.length) {
+    // Fallback: use author names as tags
+    const authors = [...new Set(allArticles.map(a => a.auteur).filter(Boolean))].slice(0, 10);
+    cloud.innerHTML = authors.map(t => `<button class="tag-pill" onclick="setFilter('${escHtml(t)}')">${escHtml(t)}</button>`).join('');
+    return;
+  }
+  cloud.innerHTML = tags.map(t => `<button class="tag-pill" onclick="handleTagSearch('${escHtml(t)}')">${escHtml(t)}</button>`).join('');
+}
+
+function handleTagSearch(tag) {
+  currentSearch = tag;
+  document.getElementById('searchInput').value = tag;
+  document.getElementById('searchClear').classList.add('visible');
+  currentPage = 1;
+  renderArticles();
+  document.getElementById('articles-section').scrollIntoView({ behavior: 'smooth' });
+}
+
+function setFilter(f) {
+  currentFilter = f;
+  currentPage = 1;
+  renderAll();
+}
+
+function handleSearch() {
+  currentSearch = document.getElementById('searchInput').value.toLowerCase();
+  const mobileInput = document.getElementById('mobileSearchInput');
+  if (mobileInput) mobileInput.value = document.getElementById('searchInput').value;
+  document.getElementById('searchClear').classList.toggle('visible', currentSearch.length > 0);
+  currentPage = 1;
+  renderArticles();
+}
+
+function clearSearch() {
+  currentSearch = '';
+  document.getElementById('searchInput').value = '';
+  document.getElementById('searchClear').classList.remove('visible');
+  currentPage = 1;
+  renderArticles();
+}
+
+function getFilteredArticles() {
+  return allArticles.filter(a => {
+    if (currentFilter && currentFilter !== 'all') {
+      if ((a.auteur || '') !== currentFilter) return false;
+    }
+    if (currentSearch) {
+      const q = currentSearch;
+      const inTitle = (a.titre || '').toLowerCase().includes(q);
+      const inAuteur = (a.auteur || '').toLowerCase().includes(q);
+      const inIntro = (a.introduction || '').toLowerCase().includes(q);
+      const inBlocs = (a.blocs || []).some(b => (b.texte || '').toLowerCase().includes(q));
+      if (!inTitle && !inAuteur && !inIntro && !inBlocs) return false;
+    }
+    return true;
+  });
+}
+
+function renderArticles() {
+  const grid = document.getElementById('articlesGrid');
+  const filtered = getFilteredArticles();
+
+  // Update count
+  const countEl = document.getElementById('resultsCount');
+  if (countEl) countEl.textContent = filtered.length ? `${filtered.length} article${filtered.length > 1 ? 's' : ''}` : '';
+
+  if (!filtered.length) {
+    grid.innerHTML = `
+      <div class="empty-state" style="grid-column:1/-1">
+        <div class="ornament">§</div>
+        <h3>${currentSearch ? 'Aucun résultat' : 'Aucune publication disponible'}</h3>
+        <p>${currentSearch ? 'Essayez d\'autres termes de recherche.' : 'Les premières revues paraîtront prochainement.'}</p>
+      </div>`;
+    document.getElementById('pagination').innerHTML = '';
+    return;
+  }
+
+  const total = filtered.length;
+  const totalPages = Math.ceil(total / PER_PAGE);
+  if (currentPage > totalPages) currentPage = 1;
+  const page = filtered.slice((currentPage - 1) * PER_PAGE, currentPage * PER_PAGE);
+
+  grid.innerHTML = page.map((art, i) => renderCard(art, i)).join('');
+  if (currentView === 'list') grid.classList.add('list-view');
+  renderPagination(totalPages);
+
+  grid.querySelectorAll('.article-card').forEach(card => {
+    card.addEventListener('click', () => openArticle(card.dataset.id));
+  });
+}
+
+function renderCard(art, i) {
+  const date = art.date
+    ? new Date(art.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
+    : '';
+  const initials = getInitials(art.auteur || '');
+  const imgHtml = art.imageUrl
+    ? `<img class="card-img" src="${escHtml(art.imageUrl)}" alt="" loading="lazy">`
+    : '';
+  const excerpt = getExcerpt(art);
+  const readTime = estimateReadTime(art);
+  // Badge for recent articles (last 7 days)
+  const isNew = art.date && (Date.now() - new Date(art.date)) < 7 * 24 * 3600 * 1000;
+
+  return `
+    <div class="article-card" data-id="${art.id}" style="animation:fadeUp 0.4s ease ${i*0.06}s both">
+      ${isNew ? '<span class="card-badge">Nouveau</span>' : ''}
+      ${imgHtml}
+      ${art.auteur ? `<div class="article-category">${escHtml(art.auteur)}</div>` : ''}
+      <div class="article-title">${escHtml(art.titre || 'Sans titre')}</div>
+      ${art.introduction ? `<div class="article-excerpt">${escHtml(art.introduction)}</div>` : excerpt ? `<div class="article-excerpt">${escHtml(excerpt)}</div>` : ''}
+      <div class="article-meta-row">
+        <div class="author-avatar">${initials}</div>
+        ${art.auteur ? `<span>${escHtml(art.auteur)}</span>` : ''}
+        ${date ? `<div class="dot"></div><span>${date}</span>` : ''}
+        <span class="card-read-time">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="10" height="10"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          ${readTime} min
+        </span>
+      </div>
+    </div>`;
+}
+
+function estimateReadTime(art) {
+  let words = 0;
+  if (art.introduction) words += art.introduction.split(' ').length;
+  (art.blocs || []).forEach(b => { if (b.texte) words += b.texte.split(' ').length; });
+  return Math.max(1, Math.round(words / 200));
+}
+
+function renderPagination(totalPages) {
+  const pag = document.getElementById('pagination');
+  if (totalPages <= 1) { pag.innerHTML = ''; return; }
+  let html = `<button class="page-btn" ${currentPage===1?'disabled':''} onclick="gotoPage(${currentPage-1})">‹</button>`;
+  for (let p = 1; p <= totalPages; p++) {
+    html += `<button class="page-btn${p===currentPage?' active':''}" onclick="gotoPage(${p})">${p}</button>`;
+  }
+  html += `<button class="page-btn" ${currentPage===totalPages?'disabled':''} onclick="gotoPage(${currentPage+1})">›</button>`;
+  pag.innerHTML = html;
+}
+
+function gotoPage(p) {
+  currentPage = p;
+  renderArticles();
+  document.getElementById('articles-section').scrollIntoView({ behavior: 'smooth' });
+}
+
+function renderSidebar() {
+  const top = [...allArticles]
+    .sort((a, b) => (b.likes?.count || 0) - (a.likes?.count || 0))
+    .slice(0, 4);
+  document.getElementById('popularArticles').innerHTML = top.length
+    ? top.map((a, i) => `
+        <div class="sidebar-article" onclick="openArticle('${a.id}')">
+          <div class="sidebar-num">0${i+1}</div>
+          <div class="sidebar-text"><strong>${escHtml(a.titre || 'Sans titre')}</strong>${escHtml(a.auteur || '')}</div>
+        </div>`).join('')
+    : '<p style="font-size:0.82rem;color:var(--text3)">Aucun article.</p>';
+}
+
+// ============================================================
+// ARTICLE VIEW
+// ============================================================
+function openArticle(id) {
+  const art = allArticles.find(a => String(a.id) === String(id));
+  if (!art) return;
+  currentArticleId = id;
+
+  const date = art.date
+    ? new Date(art.date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
+    : '';
+
+  const userLiked = (art.likes?.users || []).includes(currentUser.fullName);
+  const likeCount = art.likes?.count || 0;
+  const readTime = estimateReadTime(art);
+  const blocksHtml = (art.blocs || []).map(renderBloc).join('');
+
+  const commentsHtml = (art.comments || []).map(c => `
+    <li class="comment-item">
+      <div class="comment-author">
+        ${escHtml(c.author)}
+        <span class="comment-date">${formatDate(c.date)}</span>
+      </div>
+      <p class="comment-text">${escHtml(c.text)}</p>
+    </li>`).join('');
+
+  const imgHtml = art.imageUrl
+    ? `<img class="av-cover" src="${escHtml(art.imageUrl)}" alt="" loading="lazy">`
+    : '';
+
+  // Related articles (same auteur, exclude current)
+  const related = allArticles
+    .filter(a => String(a.id) !== String(id) && a.auteur === art.auteur)
+    .slice(0, 3);
+
+  const relatedHtml = related.length ? `
+    <div class="related-section">
+      <div class="related-title">Articles connexes</div>
+      <div class="related-grid">
+        ${related.map(r => `
+          <div class="related-card" onclick="openArticle('${r.id}')">
+            <div class="related-card-title">${escHtml(r.titre || 'Sans titre')}</div>
+            <div class="related-card-author">${escHtml(r.auteur || '')}</div>
+          </div>`).join('')}
+      </div>
+    </div>` : '';
+
+  document.getElementById('article-view-content').innerHTML = `
+    <div class="article-view-inner">
+      ${imgHtml}
+      ${art.auteur ? `<div class="av-category">${escHtml(art.auteur)}</div>` : ''}
+      <h1 class="av-title">${escHtml(art.titre || 'Sans titre')}</h1>
+      <div class="av-meta">
+        <div class="av-author">
+          <div class="av-author-avatar">${getInitials(art.auteur || '')}</div>
+          <div>
+            ${art.auteur ? `<div class="av-author-name">${escHtml(art.auteur)}</div>` : ''}
+          </div>
+        </div>
+        ${date ? `<div class="dot"></div><span>${date}</span>` : ''}
+        <div class="dot"></div>
+        <span>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="11" height="11" style="margin-right:3px;vertical-align:middle"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          ${readTime} min de lecture
+        </span>
+      </div>
+      ${art.introduction ? `<div style="font-family:var(--font-serif);font-style:italic;font-size:1.15rem;color:var(--text2);margin-bottom:2rem;padding-left:1rem;border-left:3px solid var(--gold);line-height:1.7">${escHtml(art.introduction)}</div>` : ''}
+      <div class="av-body">${blocksHtml}</div>
+      <div class="av-interactions">
+        <button class="like-btn${userLiked?' liked':''}" id="like-btn-${art.id}"
+          data-article-id="${art.id}" ${userLiked?'disabled':''}>
+          <span class="like-icon">♦</span>
+          <span id="like-count-${art.id}">${likeCount}</span>
+          <span>${userLiked ? 'Apprécié' : 'Apprécier'}</span>
+        </button>
+        <span class="comment-count-label">${(art.comments||[]).length} avis de doctrine</span>
+        <button class="share-btn" onclick="shareArticle()">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          Partager
+        </button>
+      </div>
+      ${relatedHtml}
+      <div class="comments-section">
+        <div class="comments-title">Avis de doctrine</div>
+        <ul class="comment-list" id="comment-list-${art.id}">${commentsHtml}</ul>
+        <div class="comment-form">
+          <textarea class="comment-input" id="comment-input-${art.id}"
+            placeholder="Votre observation juridique… (Ctrl+Entrée pour publier)" rows="2"></textarea>
+          <button class="comment-submit" id="comment-submit-${art.id}"
+            onclick="submitComment('${art.id}')">Publier</button>
+        </div>
+      </div>
+    </div>`;
+
+  document.getElementById('home-view').style.display = 'none';
+  document.getElementById('article-view').style.display = 'block';
+  window.scrollTo(0, 0);
+
+  const likeBtn = document.getElementById(`like-btn-${art.id}`);
+  if (likeBtn && !userLiked) {
+    likeBtn.addEventListener('click', () => handleLike(art.id, likeBtn));
+  }
+
+  const ta = document.getElementById(`comment-input-${art.id}`);
+  if (ta) ta.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) submitComment(art.id);
+  });
+}
+
+function renderBloc(bloc) {
+  switch (bloc.type) {
+    case 'grand-titre':
+      return `<h2>${bloc.numero ? `<span style="opacity:.45;margin-right:.4rem">${escHtml(bloc.numero)}</span>` : ''}${escHtml(bloc.texte || '')}</h2>`;
+    case 'sous-titre':
+      return `<h3>${escHtml(bloc.texte || '')}</h3>`;
+    case 'paragraphe':
+      return `<p>${escHtml(bloc.texte || '').replace(/\n/g, '<br>')}</p>`;
+    case 'citation':
+      return `<blockquote>${escHtml(bloc.texte || '')}</blockquote>`;
+    case 'image':
+      return bloc.url ? `<img src="${escHtml(bloc.url)}" alt="" style="width:100%;margin:1.5rem 0;border-radius:var(--radius);border:1px solid var(--border)" loading="lazy">` : '';
+    default:
+      return '';
+  }
+}
+
+// ============================================================
+// SHARE & PRINT
+// ============================================================
+function shareArticle() {
+  if (navigator.share) {
+    const art = allArticles.find(a => String(a.id) === String(currentArticleId));
+    navigator.share({
+      title: art?.titre || 'Revue Juridique',
+      text: art?.introduction || '',
+      url: window.location.href
+    }).catch(() => {});
+  } else {
+    navigator.clipboard.writeText(window.location.href)
+      .then(() => showToast('Lien copié dans le presse-papiers.', '✓'))
+      .catch(() => showToast('Impossible de copier le lien.', '!'));
+  }
+}
+
+function printArticle() {
+  window.print();
+}
+
+// ============================================================
+// NEWSLETTER
+// ============================================================
+function subscribeNewsletter(source) {
+  const inputId = source === 'footer' ? 'footerEmail' : 'sidebarEmail';
+  const email = document.getElementById(inputId)?.value.trim();
+  if (!email || !email.includes('@')) {
+    showToast('Veuillez saisir une adresse email valide.', '!');
+    return;
+  }
+  document.getElementById(inputId).value = '';
+  showToast('Votre inscription a bien été enregistrée. Merci !', '✓');
+}
+
+// ============================================================
+// INTERACTIONS
+// ============================================================
+async function handleLike(articleId, btn) {
+  btn.disabled = true;
+  try {
+    const resp = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ action: 'like', articleId, userName: currentUser.fullName })
+    });
+    const data = await resp.json();
+    if (data.success) {
+      btn.classList.add('liked');
+      document.getElementById(`like-count-${articleId}`).textContent = data.newCount;
+      btn.querySelector('span:last-child').textContent = 'Apprécié';
+      showToast('Votre appréciation a été enregistrée.', '♦');
+    } else {
+      showToast(data.message || data.error || 'Erreur.');
+      btn.disabled = false;
+    }
+  } catch {
+    showToast('Erreur réseau. Réessayez.', '!');
+    btn.disabled = false;
+  }
+}
+
+async function submitComment(articleId) {
+  const textarea = document.getElementById(`comment-input-${articleId}`);
+  const btn = document.getElementById(`comment-submit-${articleId}`);
+  const text = textarea.value.trim();
+  if (!text) return;
+  btn.disabled = true;
+  btn.textContent = '…';
+  try {
+    const resp = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify({ action: 'comment', articleId, author: currentUser.fullName, text })
+    });
+    const data = await resp.json();
+    if (data.success && data.comment) {
+      const list = document.getElementById(`comment-list-${articleId}`);
+      const li = document.createElement('li');
+      li.className = 'comment-item';
+      li.innerHTML = `
+        <div class="comment-author">${escHtml(data.comment.author)}<span class="comment-date">${formatDate(data.comment.date)}</span></div>
+        <p class="comment-text">${escHtml(data.comment.text)}</p>`;
+      list.appendChild(li);
+      textarea.value = '';
+      showToast('Commentaire publié.', '✓');
+    } else {
+      showToast(data.error || 'Erreur lors de la publication.', '!');
+    }
+  } catch {
+    showToast('Erreur réseau. Réessayez.', '!');
+  }
+  btn.disabled = false;
+  btn.textContent = 'Publier';
+}
+
+// ============================================================
+// UTILITIES
+// ============================================================
+function escHtml(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function formatDate(iso) {
+  if (!iso) return '';
+  try { return new Date(iso).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' }); }
+  catch { return ''; }
+}
+
+function getInitials(name) {
+  if (!name) return '?';
+  return name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
+}
+
+function showToast(msg, icon) {
+  document.getElementById('toastMsg').textContent = msg;
+  document.getElementById('toastIcon').textContent = icon || 'ℹ';
+  const el = document.getElementById('toast');
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 3500);
+}
+
+function getExcerpt(art) {
+  const blocs = art.blocs || [];
+  for (const b of blocs) {
+    if (b.type === 'paragraphe' && b.texte) return b.texte.slice(0, 180) + (b.texte.length > 180 ? '…' : '');
+  }
+  return '';
+}
+</script>
+</body>
+</html>
